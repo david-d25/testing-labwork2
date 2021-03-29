@@ -1234,19 +1234,19 @@ class ScrapSolverTest {
         // periodic
         assertEquals(NEGATIVE_INFINITY, solver.solve(0.0     + NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI + NEIGHBORHOOD_DELTA), MAX_ERROR)
-        assertEquals(POSITIVE_INFINITY, solver.solve(PI      + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-PI     + NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-3/2*PI + NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(0.0     - NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI - NEIGHBORHOOD_DELTA), MAX_ERROR)
-        assertEquals(NEGATIVE_INFINITY, solver.solve(PI      - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(NEGATIVE_INFINITY, solver.solve(-PI     - NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(NEGATIVE_INFINITY, solver.solve(-3/2*PI - NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(NEGATIVE_INFINITY, solver.solve(0.0     + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
-        assertEquals(POSITIVE_INFINITY, solver.solve(PI      + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-PI     + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-3/2*PI + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(0.0     - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
-        assertEquals(NEGATIVE_INFINITY, solver.solve(PI      - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(NEGATIVE_INFINITY, solver.solve(-PI     - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(NEGATIVE_INFINITY, solver.solve(-3/2*PI - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
     }
 
