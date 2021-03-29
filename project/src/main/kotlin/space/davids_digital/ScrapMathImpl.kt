@@ -5,7 +5,7 @@ import kotlin.math.*
 
 class ScrapMathImpl: ScrapMath {
     companion object {
-        private const val MAX_DELTA = 0.00000001
+        private const val MAX_DELTA = 0.000000000001
     }
 
     override fun sin(x: Double): Double {

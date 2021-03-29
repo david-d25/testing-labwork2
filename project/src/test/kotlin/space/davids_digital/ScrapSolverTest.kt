@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import kotlin.Double.Companion.NEGATIVE_INFINITY
@@ -44,7 +45,7 @@ import kotlin.math.*
 //    }
 //}
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(PER_CLASS)
 class ScrapSolverTest {
     companion object {
         const val NEIGHBORHOOD_DELTA = 0.0000001
@@ -926,32 +927,32 @@ class ScrapSolverTest {
     fun `at asymptotes`() {
         // periodic
         assertEquals(NaN, solver.solve(0.0))
-        assertEquals(NaN, solver.solve(-2/PI))
+        assertEquals(NaN, solver.solve(-0.5*PI))
         assertEquals(NaN, solver.solve(PI))
         assertEquals(NaN, solver.solve(-3/2*PI))
         assertEquals(NaN, solver.solve(0.0 - PERIOD)) // TODO fix (actual: -Infinity)
-        assertEquals(NaN, solver.solve(-2/PI - PERIOD))
+        assertEquals(NaN, solver.solve(-0.5*PI - PERIOD))
         assertEquals(NaN, solver.solve(PI - PERIOD))
-        assertEquals(NaN, solver.solve(-2/2*PI - PERIOD))
+        assertEquals(NaN, solver.solve(-3/2*PI - PERIOD))
     }
 
     @Test
     fun `near asymptotes`() {
         // periodic
         assertEquals(NEGATIVE_INFINITY, solver.solve(0.0     + NEIGHBORHOOD_DELTA), MAX_ERROR)
-        assertEquals(POSITIVE_INFINITY, solver.solve(-2/PI   + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI + NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(PI      + NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-3/2*PI + NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(0.0     - NEIGHBORHOOD_DELTA), MAX_ERROR)
-        assertEquals(POSITIVE_INFINITY, solver.solve(-2/PI   - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI - NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(NEGATIVE_INFINITY, solver.solve(PI      - NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(NEGATIVE_INFINITY, solver.solve(-3/2*PI - NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(NEGATIVE_INFINITY, solver.solve(0.0     + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
-        assertEquals(POSITIVE_INFINITY, solver.solve(-2/PI   + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(PI      + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-3/2*PI + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(0.0     - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
-        assertEquals(POSITIVE_INFINITY, solver.solve(-2/PI   - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(NEGATIVE_INFINITY, solver.solve(PI      - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
         assertEquals(NEGATIVE_INFINITY, solver.solve(-3/2*PI - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
     }
