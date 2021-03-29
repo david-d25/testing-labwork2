@@ -2,10 +2,12 @@ package space.davids_digital
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import kotlin.Double.Companion.NEGATIVE_INFINITY
 import kotlin.Double.Companion.NaN
 import kotlin.Double.Companion.POSITIVE_INFINITY
 import kotlin.math.*
@@ -45,11 +47,13 @@ import kotlin.math.*
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ScrapSolverTest {
     companion object {
-        const val DELTA = 0.0000001
+        const val NEIGHBORHOOD_DELTA = 0.0000001
+        const val MAX_ERROR = 0.000001
         const val PERIOD = 2*PI
     }
 
     private lateinit var mathMock: ScrapMath
+    private lateinit var solver: ScrapSolver
 
     @BeforeAll
     fun initMock() {
@@ -913,14 +917,209 @@ class ScrapSolverTest {
         `when`(mathMock.log10(0.2800000000000000)).thenReturn(-0.5528419686577807)
     }
 
-    @Test
-    fun `solver works correctly at asymptotes`() {
-        val solver = ScrapSolver(mathMock)
-        assertEquals(NaN, solver.solve(0.0), DELTA) // actual: NaN
-        assertEquals(NaN, solver.solve(0.0 - PERIOD), DELTA) // actual: -Infinity
-        // TODO fix
+    @BeforeEach
+    fun initSolver() {
+        solver = ScrapSolver(mathMock)
+    }
 
-        assertEquals(NaN, solver.solve(-2/PI), DELTA)
-        assertEquals(NaN, solver.solve(-2/PI - PERIOD), DELTA)
+    @Test
+    fun `at asymptotes`() {
+        // periodic
+        assertEquals(NaN, solver.solve(0.0))
+        assertEquals(NaN, solver.solve(-2/PI))
+        assertEquals(NaN, solver.solve(PI))
+        assertEquals(NaN, solver.solve(-3/2*PI))
+        assertEquals(NaN, solver.solve(0.0 - PERIOD)) // TODO fix (actual: -Infinity)
+        assertEquals(NaN, solver.solve(-2/PI - PERIOD))
+        assertEquals(NaN, solver.solve(PI - PERIOD))
+        assertEquals(NaN, solver.solve(-2/2*PI - PERIOD))
+    }
+
+    @Test
+    fun `near asymptotes`() {
+        // periodic
+        assertEquals(NEGATIVE_INFINITY, solver.solve(0.0     + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-2/PI   + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(PI      + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-3/2*PI + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(0.0     - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-2/PI   - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(NEGATIVE_INFINITY, solver.solve(PI      - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(NEGATIVE_INFINITY, solver.solve(-3/2*PI - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(NEGATIVE_INFINITY, solver.solve(0.0     + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-2/PI   + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(PI      + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-3/2*PI + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(0.0     - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(POSITIVE_INFINITY, solver.solve(-2/PI   - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(NEGATIVE_INFINITY, solver.solve(PI      - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(NEGATIVE_INFINITY, solver.solve(-3/2*PI - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+    }
+
+    @Test
+    fun `at extremes`() {
+        // periodic
+        assertEquals(3.0529194659361445E13,     solver.solve(-0.717), MAX_ERROR)
+        assertEquals(-1.4583709921831516E29,    solver.solve(-1.867), MAX_ERROR)
+        assertEquals(-2.746324158962901E15,     solver.solve(-2.363), MAX_ERROR)
+        assertEquals(-3.0359052276369726E20,    solver.solve(-2.637), MAX_ERROR)
+        assertEquals(4.78789039114917E12,       solver.solve(-5.151), MAX_ERROR)
+        assertEquals(2.2814173515074825E9,      solver.solve(-5.507), MAX_ERROR)
+        assertEquals(6.656125193022193E9,       solver.solve(-5.685), MAX_ERROR)
+        assertEquals(-13.759135310773415,       solver.solve(-5.797), MAX_ERROR)
+        assertEquals(-12.413011870459437,       solver.solve(-5.801), MAX_ERROR)
+        assertEquals(3.0529194659361445E13,     solver.solve(-0.717 - PERIOD), MAX_ERROR)
+        assertEquals(-1.4583709921831516E29,    solver.solve(-1.867 - PERIOD), MAX_ERROR)
+        assertEquals(-2.746324158962901E15,     solver.solve(-2.363 - PERIOD), MAX_ERROR)
+        assertEquals(-3.0359052276369726E20,    solver.solve(-2.637 - PERIOD), MAX_ERROR)
+        assertEquals(4.78789039114917E12,       solver.solve(-5.151 - PERIOD), MAX_ERROR)
+        assertEquals(2.2814173515074825E9,      solver.solve(-5.507 - PERIOD), MAX_ERROR)
+        assertEquals(6.656125193022193E9,       solver.solve(-5.685 - PERIOD), MAX_ERROR)
+        assertEquals(-13.759135310773415,       solver.solve(-5.797 - PERIOD), MAX_ERROR)
+        assertEquals(-12.413011870459437,       solver.solve(-5.801 - PERIOD), MAX_ERROR)
+        // simple
+        assertEquals(2.864676989525873E35,      solver.solve(-0.401), MAX_ERROR)
+    }
+
+    @Test
+    fun `near extremes`() {
+        // periodic
+        assertEquals(3.0529194940501188E13,     solver.solve(-0.717 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-1.4583702097775451E29,    solver.solve(-1.867 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-2.746324168437796E15,     solver.solve(-2.363 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-3.035903697616726E20,     solver.solve(-2.637 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(4.787886328910792E12,      solver.solve(-5.151 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(2.28141735883667E9,        solver.solve(-5.507 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(6.656125083006235E9,       solver.solve(-5.685 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-13.75909462183887,        solver.solve(-5.797 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-12.413073588291374,       solver.solve(-5.801 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(3.052919437852788E13,      solver.solve(-0.717 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-1.4583717729649684E29,    solver.solve(-1.867 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-2.746324149495239E15,     solver.solve(-2.363 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-3.0359067568669655E20,    solver.solve(-2.637 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(4.78789445238783E12,       solver.solve(-5.151 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(2.28141734418101E9,        solver.solve(-5.507 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(6.656125303013066E9,       solver.solve(-5.685 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-13.759175981059713,       solver.solve(-5.797 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-12.412950158090965,       solver.solve(-5.801 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(3.0529194940501188E13,     solver.solve(-0.717 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-1.4583702097775451E29,    solver.solve(-1.867 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-2.746324168437796E15,     solver.solve(-2.363 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-3.035903697616726E20,     solver.solve(-2.637 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(4.787886328910792E12,      solver.solve(-5.151 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(2.28141735883667E9,        solver.solve(-5.507 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(6.656125083006235E9,       solver.solve(-5.685 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-13.75909462183887,        solver.solve(-5.797 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-12.413073588291374,       solver.solve(-5.801 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(3.052919437852788E13,      solver.solve(-0.717 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-1.4583717729649684E29,    solver.solve(-1.867 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-2.746324149495239E15,     solver.solve(-2.363 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-3.0359067568669655E20,    solver.solve(-2.637 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(4.78789445238783E12,       solver.solve(-5.151 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(2.28141734418101E9,        solver.solve(-5.507 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(6.656125303013066E9,       solver.solve(-5.685 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-13.759175981059713,       solver.solve(-5.797 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-12.412950158090965,       solver.solve(-5.801 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        // simple
+        assertEquals(2.8647670026964496E35,     solver.solve(-0.401 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(2.864586979211049E35,      solver.solve(-0.401 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+    }
+
+    @Test
+    fun `x = 1 is a break`() {
+        assertEquals(NaN,                   solver.solve(1.0))
+        assertEquals(-5.324558406046574E-8, solver.solve(1.0 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(5.324557879502206E-8,  solver.solve(1.0 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+    }
+
+    @Test
+    fun `at zeroes`() {
+        // periodic
+        assertEquals(0.0, solver.solve(-1.864), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-2.643), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-3.720), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-5.145), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-5.801), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-1.864 - PERIOD), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-2.643 - PERIOD), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-3.720 - PERIOD), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-5.145 - PERIOD), MAX_ERROR)
+        assertEquals(0.0, solver.solve(-5.801 - PERIOD), MAX_ERROR)
+        // simple
+        assertEquals(0.0, solver.solve(0.307), MAX_ERROR)
+    }
+
+    @Test
+    fun `near zeroes`() {
+        // periodic
+        assertEquals(4.987869312716821E28,  solver.solve(-1.864 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(3.2513567844255375E19, solver.solve(-2.643 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-0.0789782040583914,   solver.solve(-3.720 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-3.402127664685886E11, solver.solve(-5.145 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-12.413073588291374,   solver.solve(-5.801 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(4.983871158740041E28,  solver.solve(-1.864 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(3.2547373373773E19,    solver.solve(-2.643 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-0.07890517123850473,  solver.solve(-3.720 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-3.39690983217292E11,  solver.solve(-5.145 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-12.412950158090965,   solver.solve(-5.801 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(4.987869312716821E28,  solver.solve(-1.864 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(3.2513567844255375E19, solver.solve(-2.643 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-0.0789782040583914,   solver.solve(-3.720 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-3.402127664685886E11, solver.solve(-5.145 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-12.413073588291374,   solver.solve(-5.801 + NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(4.983871158740041E28,  solver.solve(-1.864 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(3.2547373373773E19,    solver.solve(-2.643 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-0.07890517123850473,  solver.solve(-3.720 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-3.39690983217292E11,  solver.solve(-5.145 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        assertEquals(-12.412950158090965,   solver.solve(-5.801 - NEIGHBORHOOD_DELTA - PERIOD), MAX_ERROR)
+        // simple
+        assertEquals(-2.0443723047924856E-4,    solver.solve(0.307 + NEIGHBORHOOD_DELTA), MAX_ERROR)
+        assertEquals(-2.0088635606996252E-4,    solver.solve(0.307 - NEIGHBORHOOD_DELTA), MAX_ERROR)
+    }
+
+    @Test
+    fun `at simple points`() {
+        // periodic
+        assertEquals(9.467551013160646E14,      solver.solve(-0.6350), MAX_ERROR)
+        assertEquals(8.396770159403462E14,      solver.solve(-0.8000), MAX_ERROR)
+        assertEquals(5.087520383882573E29,      solver.solve(-1.8627), MAX_ERROR)
+        assertEquals(-9.150634717349539E28,     solver.solve(-1.8651), MAX_ERROR)
+        assertEquals(-5.505931951772536E28,     solver.solve(-1.8752), MAX_ERROR)
+        assertEquals(-1.7364655471205607E19,    solver.solve(-2.6000), MAX_ERROR)
+        assertEquals(-1.47847555394059E20,      solver.solve(-2.6416), MAX_ERROR)
+        assertEquals(1.5690707198568324E21,     solver.solve(-2.6470), MAX_ERROR)
+        assertEquals(-5244.307172916271,        solver.solve(-3.7070), MAX_ERROR)
+        assertEquals(1.6823234512148297,        solver.solve(-3.7390), MAX_ERROR)
+        assertEquals(-1.5965177547612164E13,    solver.solve(-5.1420), MAX_ERROR)
+        assertEquals(3.121697415663028E12,      solver.solve(-5.1470), MAX_ERROR)
+        assertEquals(2.977147179959764E12,      solver.solve(-5.1650), MAX_ERROR)
+        assertEquals(3.590227679157593E9,       solver.solve(-5.6000), MAX_ERROR)
+        assertEquals(3.2796271139795513E9,      solver.solve(-5.7320), MAX_ERROR)
+        assertEquals(-10.617902944663737,       solver.solve(-5.7960), MAX_ERROR)
+        assertEquals(-13.040691498785424,       solver.solve(-5.8000), MAX_ERROR)
+        assertEquals(-355.242762584736,         solver.solve(-5.8040), MAX_ERROR)
+        assertEquals(9.467551013160646E14,      solver.solve(-0.6350 - PERIOD), MAX_ERROR)
+        assertEquals(8.396770159403462E14,      solver.solve(-0.8000 - PERIOD), MAX_ERROR)
+        assertEquals(5.087520383882573E29,      solver.solve(-1.8627 - PERIOD), MAX_ERROR)
+        assertEquals(-9.150634717349539E28,     solver.solve(-1.8651 - PERIOD), MAX_ERROR)
+        assertEquals(-5.505931951772536E28,     solver.solve(-1.8752 - PERIOD), MAX_ERROR)
+        assertEquals(-1.7364655471205607E19,    solver.solve(-2.6000 - PERIOD), MAX_ERROR)
+        assertEquals(-1.47847555394059E20,      solver.solve(-2.6416 - PERIOD), MAX_ERROR)
+        assertEquals(1.5690707198568324E21,     solver.solve(-2.6470 - PERIOD), MAX_ERROR)
+        assertEquals(-5244.307172916271,        solver.solve(-3.7070 - PERIOD), MAX_ERROR)
+        assertEquals(1.6823234512148297,        solver.solve(-3.7390 - PERIOD), MAX_ERROR)
+        assertEquals(-1.5965177547612164E13,    solver.solve(-5.1420 - PERIOD), MAX_ERROR)
+        assertEquals(3.121697415663028E12,      solver.solve(-5.1470 - PERIOD), MAX_ERROR)
+        assertEquals(2.977147179959764E12,      solver.solve(-5.1650 - PERIOD), MAX_ERROR)
+        assertEquals(3.590227679157593E9,       solver.solve(-5.6000 - PERIOD), MAX_ERROR)
+        assertEquals(3.2796271139795513E9,      solver.solve(-5.7320 - PERIOD), MAX_ERROR)
+        assertEquals(-10.617902944663737,       solver.solve(-5.7960 - PERIOD), MAX_ERROR)
+        assertEquals(-13.040691498785424,       solver.solve(-5.8000 - PERIOD), MAX_ERROR)
+        assertEquals(-355.242762584736,         solver.solve(-5.8040 - PERIOD), MAX_ERROR)
+        // simple
+        assertEquals(1.93666196215106E55,       solver.solve(-0.280), MAX_ERROR)
+        assertEquals(5.527335423535138E46,      solver.solve(-0.327), MAX_ERROR)
+        assertEquals(3.4165368071595088E16,     solver.solve(-0.600), MAX_ERROR)
+        assertEquals(4.0085735359424125E160,    solver.solve(-1.600), MAX_ERROR)
     }
 }
