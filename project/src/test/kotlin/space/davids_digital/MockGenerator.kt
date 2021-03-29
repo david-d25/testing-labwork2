@@ -2,7 +2,7 @@ package space.davids_digital
 import kotlin.math.*
 
 fun main() {
-    val asymptotesPeriodic = arrayOf(0.0, -2/ PI, -PI,  -3/2* PI)
+    val asymptotesPeriodic = arrayOf(0.0, -0.5*PI, -PI,  -3/2* PI)
     val extremesPeriodic = arrayOf(-0.717,-1.867,-2.363,-2.637,-5.151,-5.507,-5.685,-5.797,-5.801)
     val zeroesPeriodic = arrayOf(-1.864,-2.643,-3.72,-5.145,-5.801)
     val simplePointsPeriodic = arrayOf(-0.635, -0.8, -1.8627, -1.8651, -1.8752, -2.6, -2.6416, -2.647, -3.707, -3.739, -5.142, -5.147, -5.165, -5.6, -5.732, -5.796, -5.8, -5.804)
