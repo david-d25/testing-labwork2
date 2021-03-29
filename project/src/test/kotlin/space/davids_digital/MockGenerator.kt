@@ -32,7 +32,7 @@ fun main() {
 
     }
 
-    for (x in asymptotesPeriodic + extremesPeriodic + zeroesPeriodic) {
+    for (x in asymptotesPeriodic + extremesPeriodic) {
         println("`when`(mathMock.sin(${format(x)} - NEIGHBORHOOD_DELTA)).thenReturn(${format(sin(x - ScrapSolverTest.NEIGHBORHOOD_DELTA))})")
         println("`when`(mathMock.cos(${format(x)} - NEIGHBORHOOD_DELTA)).thenReturn(${format(cos(x - ScrapSolverTest.NEIGHBORHOOD_DELTA))})")
         println("`when`(mathMock.tan(${format(x)} - NEIGHBORHOOD_DELTA)).thenReturn(${format(tan(x - ScrapSolverTest.NEIGHBORHOOD_DELTA))})")
