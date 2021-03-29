@@ -1231,7 +1231,6 @@ class ScrapSolverTest {
 
     @Test
     fun `near asymptotes`() {
-        // periodic
         assertEquals(NEGATIVE_INFINITY, solver.solve(0.0     + NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-0.5*PI + NEIGHBORHOOD_DELTA), MAX_ERROR)
         assertEquals(POSITIVE_INFINITY, solver.solve(-PI     + NEIGHBORHOOD_DELTA), MAX_ERROR)
