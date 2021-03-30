@@ -6,7 +6,7 @@ import kotlin.math.pow
 
 open class BasicMath {
     companion object {
-        private const val MAX_DELTA = 0.000000000001
+        private const val MAX_DELTA = 0.0000000001
     }
 
     open fun sin(x: Double): Double {
