@@ -1,5 +1,6 @@
 package space.davids_digital
-import space.davids_digital.ScrapSolverTest.Companion.NEIGHBORHOOD_DELTA
+
+import space.davids_digital.ScrapSolverLevel0Test.Companion.NEIGHBORHOOD_DELTA
 import kotlin.math.*
 
 fun main() {
