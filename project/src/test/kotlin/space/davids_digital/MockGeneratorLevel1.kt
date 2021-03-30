@@ -10,12 +10,15 @@ fun main() {
     val extremes = arrayOf(0.401)
     val zeroes = arrayOf(0.307, 1.0)
     val simplePoints = arrayOf(0.28, 0.327, 0.6, 1.6)
-    val format = { x: Double -> x.toString().replace("Infinity", "POSITIVE_INFINITY") }
+    val format = { x: Double -> x.toString().replace("Infinity", "POSITIVE_INFINITY").replace(PI.toString(), "PI").replace((PI/2).toString(), "PI/2") }
     for (x in simplePointsPeriodic + asymptotesPeriodic + extremesPeriodic + zeroesPeriodic) {
         println("`when`(mathMock.sin(${format(x)})).thenReturn(${format(sin(x))})")
         println("`when`(mathMock.sin(${format(x)} - PERIOD)).thenReturn(${format(sin(x))})")
         println("`when`(mathMock.sin(${format(x)} - 100*PERIOD)).thenReturn(${format(sin(x))})")
 
+        println("`when`(mathMock.sin(${format(x)} + PI/2)).thenReturn(${format(sin(x + PI/2))})")
+        println("`when`(mathMock.sin(${format(x)} + PI/2 - PERIOD)).thenReturn(${format(sin(x + PI/2))})")
+        println("`when`(mathMock.sin(${format(x)} + PI/2 - 100*PERIOD)).thenReturn(${format(sin(x + PI/2))})")
     }
 
     for (x in asymptotesPeriodic + extremesPeriodic) {
@@ -25,13 +28,24 @@ fun main() {
         println("`when`(mathMock.sin(${format(x)} + NEIGHBORHOOD_DELTA)).thenReturn(${format(sin(x + NEIGHBORHOOD_DELTA))})")
         println("`when`(mathMock.sin(${format(x)} + NEIGHBORHOOD_DELTA - PERIOD)).thenReturn(${format(sin(x + NEIGHBORHOOD_DELTA))})")
         println("`when`(mathMock.sin(${format(x)} + NEIGHBORHOOD_DELTA - 100*PERIOD)).thenReturn(${format(sin(x + NEIGHBORHOOD_DELTA))})")
+
+        println("`when`(mathMock.sin(${format(x)} + PI/2 - NEIGHBORHOOD_DELTA)).thenReturn(${format(sin(x + PI/2 - NEIGHBORHOOD_DELTA))})")
+        println("`when`(mathMock.sin(${format(x)} + PI/2 - NEIGHBORHOOD_DELTA - PERIOD)).thenReturn(${format(sin(x + PI/2 - NEIGHBORHOOD_DELTA))})")
+        println("`when`(mathMock.sin(${format(x)} + PI/2 - NEIGHBORHOOD_DELTA - 100*PERIOD)).thenReturn(${format(sin(x + PI/2 - NEIGHBORHOOD_DELTA))})")
+        println("`when`(mathMock.sin(${format(x)} + PI/2 + NEIGHBORHOOD_DELTA)).thenReturn(${format(sin(x + PI/2 + NEIGHBORHOOD_DELTA))})")
+        println("`when`(mathMock.sin(${format(x)} + PI/2 + NEIGHBORHOOD_DELTA - PERIOD)).thenReturn(${format(sin(x + PI/2 + NEIGHBORHOOD_DELTA))})")
+        println("`when`(mathMock.sin(${format(x)} + PI/2 + NEIGHBORHOOD_DELTA - 100*PERIOD)).thenReturn(${format(sin(x + PI/2 + NEIGHBORHOOD_DELTA))})")
     }
 
     for (x in extremes + zeroes + simplePoints) {
         println("`when`(mathMock.log(${format(x)})).thenReturn(${format(log(x, E))})")
     }
 
-    println("`when`(mathMock.log(0.0 + NEIGHBORHOOD_DELTA)).thenReturn(${format(log(NEIGHBORHOOD_DELTA, E))})")
+    println("`when`(mathMock.log(NEIGHBORHOOD_DELTA)).thenReturn(${format(log(NEIGHBORHOOD_DELTA, E))})")
+    println("`when`(mathMock.log(2.0)).thenReturn(${format(log(2.0, E))})")
+    println("`when`(mathMock.log(3.0)).thenReturn(${format(log(3.0, E))})")
+    println("`when`(mathMock.log(5.0)).thenReturn(${format(log(5.0, E))})")
+    println("`when`(mathMock.log(10.0)).thenReturn(${format(log(10.0, E))})")
 
     for (x in extremes + zeroes) {
         println("`when`(mathMock.log(${format(x)} - NEIGHBORHOOD_DELTA)).thenReturn(${format(log(x - NEIGHBORHOOD_DELTA, E))})")
