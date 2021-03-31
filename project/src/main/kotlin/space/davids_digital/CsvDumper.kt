@@ -28,5 +28,5 @@ class CsvDumper {
 
 fun main() {
     val math = ScrapMathImpl(BasicMath())
-    CsvDumper.dumpCsv(math, ScrapSolver(math), "file.csv", -2.0, 2.0, 0.1)
+    CsvDumper.dumpCsv(math, ScrapSolver(math), "file.csv", -8.0, 8.0, 0.0625)
 }
