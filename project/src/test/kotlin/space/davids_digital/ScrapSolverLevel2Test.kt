@@ -1,11 +1,8 @@
 package space.davids_digital
 
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
-import org.junit.jupiter.api.assertAll
 import space.davids_digital.TestUtil.Companion.assertBigDouble
 import kotlin.Double.Companion.NEGATIVE_INFINITY
 import kotlin.Double.Companion.NaN
@@ -20,10 +17,12 @@ class ScrapSolverLevel2Test {
     }
 
     private lateinit var solver: ScrapSolver
+    private lateinit var math: ScrapMath
 
     @BeforeAll
-    fun initSolver() {
-        solver = ScrapSolver(ScrapMathImpl())
+    fun initEverything() {
+        math = ScrapMathImpl()
+        solver = ScrapSolver(math)
     }
 
     @Test
@@ -210,5 +209,12 @@ class ScrapSolverLevel2Test {
                 { assertBigDouble(0.2987434317911068, solver.solve(1.600)) }
 
         )
+    }
+
+    @Test
+    fun `log throws exception with x not positive`() {
+        assertThrows<IllegalArgumentException> { math.log(0.0) }
+        assertThrows<IllegalArgumentException> { math.log(-1.0) }
+        assertThrows<IllegalArgumentException> { math.log(NaN) }
     }
 }
